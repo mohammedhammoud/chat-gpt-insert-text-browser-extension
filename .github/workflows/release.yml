@@ -31,9 +31,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.ORG_ACTIONS_READALL_TOKEN }}
 
-      - name: Run build
-        run: yarn build
-
       - name: Run typecheck
         run: yarn typecheck
 
