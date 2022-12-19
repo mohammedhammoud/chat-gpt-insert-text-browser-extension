@@ -1,0 +1,61 @@
+name: Release
+on:
+  push:
+    branches: [master]
+
+env:
+  HUSKY: 0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.14'
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.ORG_ACTIONS_READALL_TOKEN }}
+
+      - name: Run build
+        run: yarn build
+
+      - name: Run typecheck
+        run: yarn typecheck
+
+      - name: Run linter
+        run: yarn lint:ci
+
+      - name: Semantic Release
+        run: yarn run semantic-release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version numbers
+        run: |
+          version=$(cat package.json | grep -Po '"version": "\K(.*)(?=")')
+          echo "RELEASE_VERSION=$version" >> $GITHUB_ENV
+
+      - name: Build
+        run: yarn build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: extension-${{ env.RELEASE_VERSION }}
+          path: dist/*
