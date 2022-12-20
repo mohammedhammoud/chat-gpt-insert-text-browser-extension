@@ -1,4 +1,3 @@
-import { PORT_NAME } from '@/constants';
 import { Message, MessageAction } from '@/types';
 import { useLayoutEffect, useRef, useState } from 'react';
 import Browser from 'webextension-polyfill';
@@ -20,7 +19,7 @@ export enum Status {
   ERROR,
 }
 
-const port = Browser.runtime.connect({ name: PORT_NAME });
+const port = Browser.runtime.connect();
 
 type State = {
   data?: unknown | null;
@@ -48,7 +47,7 @@ export const useContentState = () => {
       if (message?.action === MessageAction.SHOW_PROMPT) {
         targetRef.current = {
           element: document.activeElement,
-          range: document.getSelection()?.getRangeAt(0).cloneRange(),
+          range: document.getSelection()?.getRangeAt(0)?.cloneRange(),
         };
         setState({ status: Status.PROMPT });
       } else if (message?.action === MessageAction.LOADING) {

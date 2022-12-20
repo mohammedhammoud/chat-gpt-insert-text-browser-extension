@@ -1,10 +1,9 @@
 import Browser from 'webextension-polyfill';
 
-import { PORT_NAME } from './constants';
 import { Message, MessageAction } from './types';
 import { postConversationToOpenAI } from './utils/post-conversation-to-openai';
 
-let gptExtensionRuntimePort: Browser.Runtime.Port | null = null;
+const ports: Record<number, Browser.Runtime.Port | undefined> = {};
 
 Browser.contextMenus.create({
   contexts: ['editable'],
@@ -12,21 +11,24 @@ Browser.contextMenus.create({
   title: 'Insert ChatGPT response',
 });
 
-Browser.contextMenus.onClicked.addListener(async (info) => {
-  if (info.menuItemId !== 'insert-gpt-response') {
+Browser.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (info.menuItemId !== 'insert-gpt-response' || !tab?.id) {
     return;
   }
-  gptExtensionRuntimePort?.postMessage({
-    action: MessageAction.SHOW_PROMPT,
-  });
+  const port = ports[tab.id];
+  if (port) {
+    port.postMessage({
+      action: MessageAction.SHOW_PROMPT,
+    });
+  }
 });
 
 Browser.runtime.onConnect.addListener((port) => {
-  if (port.name !== PORT_NAME) {
+  if (!port.sender?.tab?.id) {
     return;
   }
 
-  gptExtensionRuntimePort = port;
+  ports[port.sender.tab.id] = port;
 
   port.onMessage.addListener(async (message: Message | undefined) => {
     if (message?.action === MessageAction.SEND_TO_OPEN_AI) {
