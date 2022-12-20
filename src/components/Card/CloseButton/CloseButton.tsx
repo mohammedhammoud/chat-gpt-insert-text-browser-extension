@@ -1,15 +1,15 @@
 import styled from '@emotion/styled';
 
 const StyledButton = styled.button`
-  border: 2px solid #fff;
+  border: 4px solid #fff;
   position: absolute;
-  top: -16px;
-  right: -8px;
+  top: -12px;
+  right: -12px;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   text-align: center;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: bold;
   color: #fff;
   background-color: #000000;
@@ -23,5 +23,5 @@ const StyledButton = styled.button`
 type CloseButtonProps = Omit<JSX.IntrinsicElements['button'], 'children'>;
 
 export const CloseButton = (props: CloseButtonProps) => {
-  return <StyledButton {...props}>✖</StyledButton>;
+  return <StyledButton {...props}>x</StyledButton>;
 };
