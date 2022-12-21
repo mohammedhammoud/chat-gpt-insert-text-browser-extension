@@ -8,4 +8,4 @@ A browser extension that easily inserts a ChatGPT response on editable elements.
 
 ## Credit
 
-This project is inspired by [wong2/chat-gpt-google-extension](https://github.com/ZohaibAhmed/ChatGPT-Google)
+This project is inspired by [wong2/chat-gpt-google-extension](https://github.com/wong2/chat-gpt-google-extension)
