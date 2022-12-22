@@ -2,6 +2,8 @@
 
 A browser extension that easily inserts a ChatGPT response on editable elements.
 
+https://chrome.google.com/webstore/detail/chatgpt-insert-text-brows/mbbledchocennfdiiajkoiphkobdnlnb
+
 ## Screenshot
 
 ![Screenshot](screenshot.gif?raw=true)
